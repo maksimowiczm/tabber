@@ -404,6 +404,10 @@ impl App {
         let windows = list_windows(self.config.switch_apps_ignore_minimal)?;
         let mut apps = vec![];
         for (module_path, hwnds) in windows.iter() {
+            if self.config.ignore.contains(module_path) {
+                continue;
+            }
+
             let module_hwnd = if is_iconic_window(hwnds[0].0) {
                 hwnds[hwnds.len() - 1].0
             } else {

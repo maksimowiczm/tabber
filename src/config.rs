@@ -21,6 +21,7 @@ pub struct Config {
     pub log_file: Option<PathBuf>,
     pub switch_windows_hotkey: Hotkey,
     pub switch_windows_blacklist: HashSet<String>,
+    pub ignore: HashSet<String>,
     pub switch_windows_ignore_minimal: bool,
     pub switch_apps_enable: bool,
     pub switch_apps_hotkey: Hotkey,
@@ -40,6 +41,7 @@ impl Default for Config {
             )
             .unwrap(),
             switch_windows_blacklist: Default::default(),
+            ignore: Default::default(),
             switch_windows_ignore_minimal: false,
             switch_apps_enable: false,
             switch_apps_hotkey: Hotkey::create(SWITCH_APPS_HOTKEY_ID, "switch apps", "alt + tab")
@@ -56,6 +58,8 @@ impl Config {
             if let Some(v) = section.get("trayicon").and_then(Config::to_bool) {
                 conf.trayicon = v;
             }
+
+            conf.ignore = section.get_all("ignore").map(|p| p.to_string()).collect();
         }
 
         if let Some(section) = ini_conf.section(Some("log")) {
